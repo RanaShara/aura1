@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aura 1001 - Educational Chatbot</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&display=swap');
+    
+    :root {
+      --primary: #3213bc;
+      --secondary: #FFC107;
+      --dark: #212121;
+      --light: #FFF9C4;
+      --accent: #3f5eba;
+      --bg: #FBF5E5;
+    }
+    
+    body {
+      margin: 0;
+      font-family: 'Comic Neue', cursive;
+      background-color: var(--bg);
+      color: var(--dark);
+      overflow-x: hidden;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 2rem;
+    }
+    
+    header {
+      text-align: center;
+      padding: 2rem 0;
+      background-color: var(--primary);
+      color: white;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 3rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    
+    header::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        45deg,
+        var(--secondary),
+        var(--secondary) 10px,
+        transparent 10px,
+        transparent 20px
+      );
+      opacity: 0.1;
+    }
+    
+    header::after {
+      content: "NOW AVAILABLE!";
+      position: absolute;
+      top: 20px;
+      right: -30px;
+      background-color: var(--secondary);
+      color: var(--dark);
+      font-family: 'Bangers', cursive;
+      padding: 5px 40px;
+      transform: rotate(45deg);
+      font-size: 1.2rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    
+    h1 {
+      font-family: 'Bangers', cursive;
+      font-size: 4rem;
+      margin: 0;
+      letter-spacing: 2px;
+      text-shadow: 3px 3px 0 var(--dark);
+    }
+    
+    .tagline {
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin-top: 0.5rem;
+    }
+    
+    section {
+      margin-bottom: 3rem;
+      background-color: white;
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    
+    section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 15px;
+      background-color: var(--primary);
+      border-radius: 15px 15px 0 0;
+    }
+    
+    .speech-bubble {
+      position: relative;
+      background: var(--light);
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      text-align: left;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .speech-bubble::after {
+      content: "";
+      position: absolute;
+      bottom: -15px;
+      left: 50px;
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-top: 15px solid var(--light);
+    }
+    
+    .word {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(10px);
+      margin-right: 0.3rem;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    
+    .word.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .comic-panel {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    
+    .panel {
+      background-color: white;
+      border: 3px solid var(--dark);
+      padding: 1.5rem;
+      position: relative;
+      box-shadow: 5px 5px 0 var(--dark);
+      transform: rotate(-1deg);
+      transition: transform 0.3s ease;
+    }
+    
+    .panel:nth-child(even) {
+      transform: rotate(1deg);
+    }
+    
+    .panel:hover {
+      transform: rotate(0) scale(1.03);
+    }
+    
+    .panel h3 {
+      margin-top: 0;
+      color: var(--primary);
+      font-family: 'Bangers', cursive;
+      letter-spacing: 1px;
+      font-size: 1.5rem;
+    }
+    
+    .starburst {
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      background-color: var(--secondary);
+      width: 70px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(15deg);
+      font-weight: bold;
+      color: var(--dark);
+      clip-path: polygon(
+        50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%,
+        50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%
+      );
+    }
+    
+    .team {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    
+    .team-member {
+      background-color: white;
+      padding: 1rem;
+      border-radius: 10px;
+      min-width: 200px;
+      box-shadow: 3px 3px 0 var(--dark);
+      border: 2px dashed var(--primary);
+      transition: transform 0.3s ease;
+    }
+    
+    .team-member:hover {
+      transform: translateY(-5px);
+    }
+    
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background-color: var(--primary);
+      color: white;
+      margin-top: 3rem;
+    }
+    
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 3rem;
+      }
+      
+      .comic-panel {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <h1>AURA 1001</h1>
+      <p class="tagline">Your Ultimate Computer Science Companion</p>
+    </div>
+  </header>
+
+  <div class="container">
+    <section>
+      <div class="speech-bubble">
+        <div class="animated-text">
+          <span class="word">Hello,</span>
+          <span class="word">I'm</span>
+          <span class="word">Aura</span>
+          <span class="word">1001!</span>
+          <span class="word">I'm</span>
+          <span class="word">your</span>
+          <span class="word">guide</span>
+          <span class="word">in</span>
+          <span class="word">the</span>
+          <span class="word">world</span>
+          <span class="word">of</span>
+          <span class="word">computer</span>
+          <span class="word">science.</span>
+          <span class="word">My</span>
+          <span class="word">name,</span>
+          <span class="word">"1001,"</span>
+          <span class="word">symbolizes</span>
+          <span class="word">my</span>
+          <span class="word">limitless</span>
+          <span class="word">potential,</span>
+          <span class="word">as</span>
+          <span class="word">if</span>
+          <span class="word">I</span>
+          <span class="word">were</span>
+          <span class="word">designed</span>
+          <span class="word">to</span>
+          <span class="word">solve</span>
+          <span class="word">"a</span>
+          <span class="word">thousand</span>
+          <span class="word">and</span>
+          <span class="word">one"</span>
+          <span class="word">problems!</span>
+        </div>
+      </div>
+
+      <div class="video-container" style="margin-bottom: 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden;">
+        <video controls style="width: 100%; border-radius: 12px;">
+          <source src="videos/Aura.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+
+      <div class="comic-panel">
+        <div class="panel">
+          <div class="starburst">LIVE!</div>
+          <h3>Aura Has Arrived</h3>
+          <div class="animated-text">
+            <span class="word">From</span>
+            <span class="word">the</span>
+            <span class="word">heart</span>
+            <span class="word">of</span>
+            <span class="word">taif</span>
+            <span class="word">University,</span>
+            <span class="word">a</span>
+            <span class="word">unique</span>
+            <span class="word">assistant</span>
+            <span class="word">has</span>
+            <span class="word">arrived,</span>
+            <span class="word">specially</span>
+            <span class="word">designed</span>
+            <span class="word">to</span>
+            <span class="word">support</span>
+            <span class="word">computer</span>
+            <span class="word">science</span>
+            <span class="word">students.</span>
+          </div>
+        </div>
+        
+        <div class="panel">
+          <h3>Mission Accomplished</h3>
+          <div class="animated-text">
+            <span class="word">We've</span>
+            <span class="word">successfully</span>
+            <span class="word">completed</span>
+            <span class="word">the</span>
+            <span class="word">project</span>
+            <span class="word">and</span>
+            <span class="word">launched</span>
+            <span class="word">our</span>
+            <span class="word">educational</span>
+            <span class="word">chatbot</span>
+            <span class="word">to</span>
+            <span class="word">help</span>
+            <span class="word">computer</span>
+            <span class="word">science</span>
+            <span class="word">students!</span>
+          </div>
+        </div>
+        
+        <div class="panel">
+          <h3>Student Struggles</h3>
+          <div class="animated-text">
+            <span class="word">"I</span>
+            <span class="word">can't</span>
+            <span class="word">figure</span>
+            <span class="word">out</span>
+            <span class="word">what</span>
+            <span class="word">can</span>
+            <span class="word">i</span>
+            <span class="word">do</span>
+            <span class="word">with</span>
+            <span class="word">all</span>
+            <span class="word">of</span>
+            <span class="word">this</span>
+            <span class="word">Information</span>
+            <span class="word">there</span>
+            <span class="word">were</span>
+            <span class="word">instant</span>
+            <span class="word">help!"</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="speech-bubble">
+        <div class="animated-text">
+          <span class="word">I'm</span>
+          <span class="word">now</span>
+          <span class="word">ready</span>
+          <span class="word">to</span>
+          <span class="word">assist</span>
+          <span class="word">you!</span>
+          <span class="word">As</span>
+          <span class="word">your</span>
+          <span class="word">educational</span>
+          <span class="word">companion,</span>
+          <span class="word">I'm</span>
+          <span class="word">here</span>
+          <span class="word">to</span>
+          <span class="word">guide</span>
+          <span class="word">you</span>
+          <span class="word">through</span>
+          <span class="word">every</span>
+          <span class="word">aspect</span>
+          <span class="word">of</span>
+          <span class="word">computer</span>
+          <span class="word">science.</span>
+          <span class="word">I'm</span>
+          <span class="word">constantly</span>
+          <span class="word">learning</span>
+          <span class="word">and</span>
+          <span class="word">improving</span>
+          <span class="word">to</span>
+          <span class="word">better</span>
+          <span class="word">help</span>
+          <span class="word">you.</span>
+          <span class="word">Let's</span>
+          <span class="word">embark</span>
+          <span class="word">on</span>
+          <span class="word">this</span>
+          <span class="word">educational</span>
+          <span class="word">journey</span>
+          <span class="word">together!</span>
+        </div>
+      </div>
+
+      <div class="comic-panel">
+        <div class="panel">
+          <h3>The Challenge</h3>
+          <div class="animated-text">
+            <span class="word">But</span>
+            <span class="word">preparing</span>
+            <span class="word">a</span>
+            <span class="word">superhero</span>
+            <span class="word">in</span>
+            <span class="word">computer</span>
+            <span class="word">science</span>
+            <span class="word">is</span>
+            <span class="word">no</span>
+            <span class="word">easy</span>
+            <span class="word">task...</span>
+          </div>
+        </div>
+        
+        <div class="panel">
+          <h3>Ready to Help</h3>
+          <div class="animated-text">
+            <span class="word">"I'm</span>
+            <span class="word">here</span>
+            <span class="word">and</span>
+            <span class="word">ready</span>
+            <span class="word">to</span>
+            <span class="word">help</span>
+            <span class="word">with</span>
+            <span class="word">all</span>
+            <span class="word">your</span>
+            
+            <span class="word">questions!"</span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Student Experience</h3>
+          <div class="animated-text">
+            <span class="word">Students</span>
+            <span class="word">can</span>
+            <span class="word">now</span>
+            <span class="word">get</span>
+            <span class="word">instant</span>
+            <span class="word">help</span>
+            <span class="word">with</span>
+            <span class="word">their</span>
+            <span class="word">programming</span>
+            <span class="word">questions</span>
+            <span class="word">and</span>
+            <span class="word">enjoy</span>
+            <span class="word">a</span>
+            <span class="word">smoother</span>
+            <span class="word">learning</span>
+            <span class="word">experience!</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h3 style="text-align: center; font-family: 'Bangers', cursive; font-size: 2rem; color: var(--accent);">Meet The Development Team</h3>
+      
+      <div class="team">
+        <div class="team-member">Rana Shara Alsubaie</div>
+        <div class="team-member">Manayer Romaizan Alsubaie</div>
+        <div class="team-member">Modi Abdullah Alsubaie</div>
+        <div class="team-member">Sheikha Ayed Al-Dossari</div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>© 2025 Aura 1001 - Transforming Computer Science Education Today</p>
+    </div>
+  </footer>
+
+  <script>
+    // Word-by-word animation
+    function animateText() {
+      const textSections = document.querySelectorAll('.animated-text');
+      
+      textSections.forEach(section => {
+        const words = section.querySelectorAll('.word');
+        let delay = 0;
+        const initialDelay = 100;
+        const wordDelay = 100;
+        
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              words.forEach((word, index) => {
+                setTimeout(() => {
+                  word.classList.add('visible');
+                }, initialDelay + (index * wordDelay));
+              });
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.2 });
+        
+        observer.observe(section);
+      });
+    }
+    
+    // Panel animation
+    function animatePanels() {
+      const panels = document.querySelectorAll('.panel');
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = 1;
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+      
+      panels.forEach(panel => {
+        panel.style.opacity = 0;
+        panel.style.transition = 'opacity 0.5s ease-in-out';
+        observer.observe(panel);
+      });
+    }
+    
+    // Initialize animations when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      animateText();
+      animatePanels();
+    });
+  </script>
+</body>
+</html>
